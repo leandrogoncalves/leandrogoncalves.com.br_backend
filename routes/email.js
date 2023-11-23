@@ -1,24 +1,45 @@
-let express = require("express");
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.API_KEY_SENDGRID);
-let router = express.Router();
+const express = require("express");
+const axios = require("axios");
+const apiKey = process.env.EMAIL_API_KEY;
+const apiUrl = process.env.EMAIL_API_URL;
+const router = express.Router();
 
 router.post("/send", async (req, res, next) => {
     try {
       const { to, subject, from, text, html } = req.body;
-      const msg = {
-        to,
-        from,
-        subject,
-        text,
-        html
+      const data = {
+        "Recipients": {
+          "To": [
+            to
+          ]
+        },
+        "Content": {
+          "Body": [
+            {
+              "ContentType": "HTML",
+              "Content": html ? html : text,
+              "Charset": "utf-8"
+            }
+          ],
+          "From": `Contato via site <${from}>`,
+          "ReplyTo": `Contato via site <${from}>`,
+          "Subject": subject
+        }
       };
 
-      sgMail.send(msg).then((res)=>{
-          console.log('res:', res);
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-ElasticEmail-ApiKey': apiKey
+      }
+
+      axios.post(apiUrl,data,{headers:headers})
+      .then((res)=>{
+          console.log('response success\n');
+          //console.log(res);
       })
       .catch((err)=>{
-          console.log('err: ', err);
+          console.log('error to send e-mail:\n');
+          console.log(err);
       });
           
       
