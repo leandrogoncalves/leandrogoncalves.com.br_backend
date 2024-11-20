@@ -45,7 +45,9 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {title: 'Express'});
 });
+
+//app.listen(3000, () => console.log('Example app is listening on port 3000.'));
 
 module.exports = app;
