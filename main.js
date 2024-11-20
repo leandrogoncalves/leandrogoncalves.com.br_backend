@@ -48,6 +48,4 @@ app.use(function(err, req, res, next) {
   res.render('error', {title: 'Express'});
 });
 
-app.listen(80, () => console.log('Example app is listening on port 80.'));
-
 module.exports = app;
